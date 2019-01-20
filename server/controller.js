@@ -1,5 +1,10 @@
-const { getNextGeneration, putCellOnCoordinates, createGrid } = require('./board')
-const topics = require('./topics')
+const {
+    getNextGeneration,
+    putCellOnCoordinates,
+    putPatternOnCoordinates,
+    createGrid,
+} = require('./board')
+const { topics } = require('./constants')
 
 const createController = (storage, connection) => {
     const handleInitialRequest = () => {
@@ -38,6 +43,15 @@ const createController = (storage, connection) => {
         sendWorldUpdate(clients, newWorld)
     }
 
+    const placePattern = msg => {
+        const { x, y, color, pattern } = msg.data
+        const world = storage.getWorld()
+        const clients = storage.getClients()
+        const newWorld = putPatternOnCoordinates(world, x, y, color, pattern)
+        storage.updateWorld(newWorld)
+        sendWorldUpdate(clients, newWorld)
+    }
+
     const startTicks = () => {
         console.log('ticks started')
     }
@@ -69,6 +83,7 @@ const createController = (storage, connection) => {
         nextTick,
         pauseTick,
         refreshTicks,
+        placePattern,
     }
 }
 

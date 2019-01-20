@@ -20,6 +20,7 @@ const theme = {
     dotSize: '20px',
     hoverColor: '#e6f7ff',
     selectedColor: '#00adff',
+    cellDefaultColor: '#fff',
 }
 
 ReactDOM.render(

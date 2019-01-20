@@ -2,7 +2,7 @@
 const http = require('http')
 const Websocket = require('websocket').server
 
-const topics = require('./topics')
+const { topics } = require('./constants')
 const createStorage = require('./storage')
 const createController = require('./controller')
 const { createGrid } = require('./board')
@@ -36,6 +36,7 @@ const createMessageHandler = controller => message => {
         [topics.NEXT_TICK]: controller.nextTick,
         [topics.PAUSE_TICK]: controller.pauseTick,
         [topics.REFRESH_TICKS]: controller.refreshTicks,
+        [topics.PLACE_PATTERN]: controller.placePattern,
     }
 
     const propName = `${message.type}Data`

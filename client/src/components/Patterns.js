@@ -12,10 +12,12 @@ const ItemWrapper = styled.div`
     cursor: pointer;
     margin: 0 10px;
     padding: 5px;
-    background-color: ${({ isSelected, theme }) => isSelected && theme.selectedColor};
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: ${({ isSelected, theme }) => (isSelected ? theme.selectedColor : 'transparent')};
 
     &:hover {
-        background-color: ${({ theme, isSelected }) => !isSelected && theme.hoverColor};
+        background-color: ${({ theme }) => theme.hoverColor};
     }
 `
 

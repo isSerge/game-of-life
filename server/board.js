@@ -1,15 +1,16 @@
 const { mode } = require('./utils')
-const { floor, random } = Math
+const { patternNames } = require('./constants')
+// const { floor, random } = Math
 
-const fillWithRandomData = grid =>
-    grid.map(x =>
-        x.map(() => {
-            if (floor(random() * 2)) {
-                return '#000'
-            }
-            return 0
-        }),
-    )
+// const fillWithRandomData = grid =>
+//     grid.map(x =>
+//         x.map(() => {
+//             if (floor(random() * 2)) {
+//                 return '#000'
+//             }
+//             return 0
+//         }),
+//     )
 
 const SIZE = 20
 
@@ -57,17 +58,32 @@ const getNextGeneration = grid =>
 
 const putCellOnCoordinates = (cells, x, y, color) =>
     cells.map((row, xIndex) =>
+        row.map((cell, yIndex) => (x === xIndex && y === yIndex ? color : cell)),
+    )
+
+const putPatternOnCoordinates = (cells, x, y, color, pattern) => {
+    const patternCoordinates = {
+        [patternNames.BLINKER]: [[x - 1, y], [x, y], [x + 1, y]],
+        [patternNames.TUB]: [[x - 1, y], [x, y - 1], [x, y + 1], [x + 1, y]],
+        [patternNames.BOAT]: [[x - 1, y - 1], [x - 1, y], [x, y - 1], [x, y + 1], [x + 1, y]],
+        [patternNames.GLIDER]: [[x + 1, y - 1], [x + 1, y], [x + 1, y + 1], [x, y + 1], [x - 1, y]],
+    }
+
+    const coordinates = patternCoordinates[pattern]
+
+    return cells.map((row, xIndex) =>
         row.map((cell, yIndex) => {
-            if (x === xIndex && y === yIndex) {
-                return color
-            }
-            return cell
+            const isMatch = ([x, y]) => x === xIndex && y === yIndex
+            const isFound = !!coordinates.find(isMatch)
+            return isFound ? color : cell
         }),
     )
+}
 
 module.exports = {
     getNextGeneration,
     createGrid,
     putCellOnCoordinates,
-    fillWithRandomData,
+    // fillWithRandomData,
+    putPatternOnCoordinates,
 }

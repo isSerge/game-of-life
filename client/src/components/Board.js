@@ -5,10 +5,10 @@ import styled from 'styled-components'
 import { TdBase } from './common'
 
 const Td = styled(TdBase)`
-    background-color: ${({ color }) => (color ? color : '#fff')};
+    background-color: ${({ theme, color }) => (color ? color : theme.cellDefaultColor)};
 
     &:hover {
-        background-color: ${({ color }) => (color ? color : '#e6f7ff')};
+        background-color: ${({ theme, color }) => (color ? color : theme.hoverColor)};
     }
 `
 
