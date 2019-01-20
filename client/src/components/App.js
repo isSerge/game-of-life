@@ -1,20 +1,17 @@
 import React, { useState, useLayoutEffect } from 'react'
 import styled from 'styled-components'
+
 import Header from './Header'
 import Board from './Board'
-import topics from './topics'
-
-const Flexed = styled.div`
-    display: flex;
-    align-items: center;
-`
+import Patterns from './Patterns'
+import topics from '../topics'
+import patterns from '../patterns'
+import { dot, Flexed } from './common'
 
 const ColorDot = styled.div`
+    ${dot}
     margin-left: 10px;
-    width: 15px;
-    height: 15px;
     background-color: ${({ color }) => color};
-    border-radius: 50%;
 `
 
 const putCellOnCoordinates = (cells, x, y) =>
@@ -33,6 +30,7 @@ const App = () => {
     const [cells, updateCells] = useState([])
     const [generation, setGeneration] = useState(0)
     const [userColor, setUserColor] = useState('')
+    const [selectedPattern, selectPattern] = useState('Default')
 
     const sendEvent = (topic, data) =>
         socket.send(
@@ -43,6 +41,10 @@ const App = () => {
         )
 
     const placeCell = (x, y) => {
+        // check if pattern is not default
+        // get neighbours
+        // update neigbours according to pattern
+        // send - events or event?
         if (!cells[x][y]) {
             sendEvent(topics.PLACE_CELL, { x, y, color: userColor })
         }
@@ -62,22 +64,22 @@ const App = () => {
             updateCells(putCellOnCoordinates(cells, x, y))
         }
 
-        if (object.topic === 'initial-response') {
+        if (object.topic === topics.INITIAL_RESPONSE) {
             setUserColor(object.data.color)
             updateCells(object.data.world)
         }
 
-        if (object.topic === 'world-update') {
+        if (object.topic === topics.WORLD_UPDATE) {
             updateCells(object.data)
         }
     }
 
     useLayoutEffect(() => {
-        socket.addEventListener('open', () => sendEvent('initial-request'))
+        socket.addEventListener('open', () => sendEvent(topics.INITIAL_REQUEST))
         socket.addEventListener('message', handleEvent)
 
         return () => {
-            socket.removeEventListener('open', () => sendEvent('initial-request'))
+            socket.removeEventListener('open', () => sendEvent(topics.INITIAL_REQUEST))
             socket.removeEventListener('message', handleEvent)
             socket.close()
         }
@@ -92,6 +94,11 @@ const App = () => {
             </Flexed>
             <p>Generation: {generation}</p>
             <Board cells={cells} handleCellClick={placeCell} />
+            <Patterns
+                patterns={patterns}
+                handleItemClick={selectPattern}
+                selectedPattern={selectedPattern}
+            />
             <button onClick={startTicks}>start</button>
             <button onClick={nextTick}>next</button>
             <button onClick={pauseTicks}>pause</button>

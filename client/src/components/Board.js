@@ -2,13 +2,10 @@ import React from 'react'
 import { v4 } from 'uuid'
 import styled from 'styled-components'
 
-const Td = styled.td`
-    border: 1px solid #e8e8e8;
-    width: 15px;
-    height: 15px;
-    transition: all 300ms;
+import { TdBase } from './common'
+
+const Td = styled(TdBase)`
     background-color: ${({ color }) => (color ? color : '#fff')};
-    border-radius: 50%;
 
     &:hover {
         background-color: ${({ color }) => (color ? color : '#e6f7ff')};

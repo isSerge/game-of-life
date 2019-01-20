@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
 import ReactDOM from 'react-dom'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
-import App from './App'
+
+import App from './components/App'
 
 const GlobalStyle = createGlobalStyle`
     body {
@@ -15,7 +16,11 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 
-const theme = {}
+const theme = {
+    dotSize: '20px',
+    hoverColor: '#e6f7ff',
+    selectedColor: '#00adff',
+}
 
 ReactDOM.render(
     <ThemeProvider theme={theme}>
