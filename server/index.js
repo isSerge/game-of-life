@@ -1,9 +1,14 @@
 // const fs = require('fs');
 const http = require('http')
 const Websocket = require('websocket').server
-const { getNextGeneration, createGrid, putCellOnCoordinates } = require('./board')
-const topics = require('./topics')
 
+const topics = require('./topics')
+const createStorage = require('./storage')
+const createController = require('./controller')
+const { createGrid } = require('./board')
+const { generateRandomColor } = require('./utils')
+
+const storage = createStorage(createGrid(20))
 // const index = fs.readFileSync('./index.html', 'utf8');
 // (req, res) => {
 //     res.writeHead(200);
@@ -20,94 +25,47 @@ const ws = new Websocket({
     autoAcceptConnections: false,
 })
 
-let clients = []
-let world = createGrid(20)
+const createMessageHandler = controller => message => {
+    console.log('message :', message)
+    const propName = `${message.type}Data`
 
-const generateRandomColor = () => `#${(((1 << 24) * Math.random()) | 0).toString(16)}`
+    const topicHandlers = {
+        [topics.INITIAL_REQUEST]: controller.handleInitialRequest,
+        [topics.PLACE_CELL]: controller.placeCell,
+        [topics.START_TICKS]: controller.startTicks,
+        [topics.NEXT_TICK]: controller.nextTick,
+        [topics.PAUSE_TICK]: controller.pauseTick,
+        [topics.REFRESH_TICKS]: controller.refreshTicks,
+    }
 
-const handleInitialRequest = connection => {
-    const { color } = clients.find(cl => cl.connection === connection)
-
-    connection.send(
-        JSON.stringify({
-            topic: 'initial-response',
-            data: {
-                color,
-                world,
-            },
-        }),
-    )
+    try {
+        const msg = JSON.parse(message[propName])
+        const handle = topicHandlers[msg.topic]
+        return handle(msg)
+    } catch (error) {
+        console.error(error)
+    }
 }
 
-const sendWorldUpdate = (clients, world) => {
-    clients.forEach(({ connection }) => {
-        connection.send(
-            JSON.stringify({
-                topic: 'world-update',
-                data: world,
-            }),
-        )
-    })
+const createCloseHandler = connection => (reasonCode, description) => {
+    console.log(`Disconnected ${connection.remoteAddress}`)
+    console.dir({ reasonCode, description })
 }
 
-const placeCell = ({ x, y, color }) => {
-    world = putCellOnCoordinates(world, x, y, color)
-    sendWorldUpdate(clients, world)
-}
-
-const startTicks = () => {
-    console.log('ticks started')
-}
-
-const nextTick = () => {
-    console.log('todo nextTick')
-}
-
-const pauseTick = () => {
-    console.log('todo pauseTick')
-}
-
-const refreshTicks = () => {
-    console.log('todo refreshTicks')
-}
-
-ws.on('request', req => {
+const handleRequest = req => {
     const connection = req.accept('', req.origin)
+    const color = generateRandomColor()
 
-    clients.push({ connection, color: generateRandomColor() })
+    storage.addClient({ connection, color })
 
-    console.log('Connected ' + connection.remoteAddress)
+    console.log(`Connected ${connection.remoteAddress}`)
 
-    connection.on('message', message => {
-        console.log('message :', message)
-        const propName = `${message.type}Data`
+    const controller = createController(storage, connection)
+    const handleClose = createCloseHandler(connection)
+    const handleMessage = createMessageHandler(controller)
 
-        try {
-            const msg = JSON.parse(message[propName])
+    connection.on('message', handleMessage)
+    connection.on('close', handleClose)
+}
 
-            switch (msg.topic) {
-                case topics.INITIAL_REQUEST:
-                    return handleInitialRequest(connection)
-                case topics.PLACE_CELL:
-                    return placeCell(msg.data)
-                case topics.START_TICKS:
-                    return startTicks()
-                case topics.NEXT_TICK:
-                    return nextTick()
-                case topics.PAUSE_TICK:
-                    return pauseTick()
-                case topics.REFRESH_TICKS:
-                    return refreshTicks()
-                default:
-                    break
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    })
-
-    connection.on('close', (reasonCode, description) => {
-        console.log('Disconnected ' + connection.remoteAddress)
-        console.dir({ reasonCode, description })
-    })
-})
+ws.on('request', handleRequest)

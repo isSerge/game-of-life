@@ -24,7 +24,11 @@ const getNeighbourCoordinates = (x, y) =>
 
 const countNeighbours = (grid, xIndex, yIndex) => {
     const neighbours = getNeighbourCoordinates(xIndex, yIndex)
-    return neighbours.reduce((acc, [x, y]) => acc + grid[x][y], 0)
+    return neighbours.reduce((acc, [x, y]) => {
+        if (grid[x][y]) {
+            return acc + 1
+        }
+    }, 0)
 }
 
 const getNextGeneration = grid =>
@@ -32,6 +36,7 @@ const getNextGeneration = grid =>
         x.map((_, yIndex) => {
             const cell = grid[xIndex][yIndex]
             const neighbours = countNeighbours(grid, xIndex, yIndex)
+            // calc dominating color
 
             if (cell === 0 && neighbours === 3) {
                 return 1
