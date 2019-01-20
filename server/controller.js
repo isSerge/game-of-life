@@ -1,4 +1,5 @@
-const { getNextGeneration, putCellOnCoordinates } = require('./board')
+const { getNextGeneration, putCellOnCoordinates, createGrid } = require('./board')
+const topics = require('./topics')
 
 const createController = (storage, connection) => {
     const handleInitialRequest = () => {
@@ -8,7 +9,7 @@ const createController = (storage, connection) => {
 
         connection.send(
             JSON.stringify({
-                topic: 'initial-response',
+                topic: topics.INITIAL_RESPONSE,
                 data: {
                     color,
                     world,
@@ -21,7 +22,7 @@ const createController = (storage, connection) => {
         clients.forEach(({ connection }) => {
             connection.send(
                 JSON.stringify({
-                    topic: 'world-update',
+                    topic: topics.WORLD_UPDATE,
                     data: world,
                 }),
             )
@@ -31,9 +32,9 @@ const createController = (storage, connection) => {
     const placeCell = msg => {
         const { x, y, color } = msg.data
         const world = storage.getWorld()
+        const clients = storage.getClients()
         const newWorld = putCellOnCoordinates(world, x, y, color)
         storage.updateWorld(newWorld)
-        const clients = storage.getClients()
         sendWorldUpdate(clients, newWorld)
     }
 
@@ -42,7 +43,11 @@ const createController = (storage, connection) => {
     }
 
     const nextTick = () => {
-        console.log('todo nextTick')
+        const world = storage.getWorld()
+        const clients = storage.getClients()
+        const newWorld = getNextGeneration(world)
+        storage.updateWorld(newWorld)
+        sendWorldUpdate(clients, newWorld)
     }
 
     const pauseTick = () => {
@@ -50,7 +55,10 @@ const createController = (storage, connection) => {
     }
 
     const refreshTicks = () => {
-        console.log('todo refreshTicks')
+        const clients = storage.getClients()
+        const newWorld = createGrid(20)
+        storage.updateWorld(newWorld)
+        sendWorldUpdate(clients, newWorld)
     }
 
     return {

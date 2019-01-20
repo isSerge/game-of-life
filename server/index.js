@@ -8,7 +8,6 @@ const createController = require('./controller')
 const { createGrid } = require('./board')
 const { generateRandomColor } = require('./utils')
 
-const storage = createStorage(createGrid(20))
 // const index = fs.readFileSync('./index.html', 'utf8');
 // (req, res) => {
 //     res.writeHead(200);
@@ -25,9 +24,10 @@ const ws = new Websocket({
     autoAcceptConnections: false,
 })
 
+const storage = createStorage(createGrid(20))
+
 const createMessageHandler = controller => message => {
     console.log('message :', message)
-    const propName = `${message.type}Data`
 
     const topicHandlers = {
         [topics.INITIAL_REQUEST]: controller.handleInitialRequest,
@@ -37,6 +37,8 @@ const createMessageHandler = controller => message => {
         [topics.PAUSE_TICK]: controller.pauseTick,
         [topics.REFRESH_TICKS]: controller.refreshTicks,
     }
+
+    const propName = `${message.type}Data`
 
     try {
         const msg = JSON.parse(message[propName])
@@ -52,8 +54,10 @@ const createCloseHandler = connection => (reasonCode, description) => {
     console.dir({ reasonCode, description })
 }
 
-const handleRequest = req => {
+const createRequestHandler = storage => req => {
+    // accept all requests
     const connection = req.accept('', req.origin)
+
     const color = generateRandomColor()
 
     storage.addClient({ connection, color })
@@ -68,4 +72,4 @@ const handleRequest = req => {
     connection.on('close', handleClose)
 }
 
-ws.on('request', handleRequest)
+ws.on('request', createRequestHandler(storage))
