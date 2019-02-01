@@ -55,7 +55,9 @@ const createController = (storage, connection) => {
     }
 
     const startTicks = () => {
-        ticksInterval = setInterval(nextTick, 1000)
+        if (!ticksInterval) {
+            ticksInterval = setInterval(nextTick, 1000)
+        }
     }
 
     const nextTick = () => {
