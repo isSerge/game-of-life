@@ -1,10 +1,10 @@
+const { topics } = require('./constants')
 const {
     getNextGeneration,
     putCellOnCoordinates,
     putPatternOnCoordinates,
     createGrid,
 } = require('./board')
-const { topics } = require('./constants')
 
 const createController = (storage, connection) => {
     let ticksInterval
@@ -19,7 +19,7 @@ const createController = (storage, connection) => {
                 topic: topics.INITIAL_RESPONSE,
                 data: {
                     color,
-                    world,
+                    ...world,
                 },
             }),
         )
@@ -36,58 +36,53 @@ const createController = (storage, connection) => {
         })
     }
 
-    const placeCell = msg => {
-        const { x, y, color } = msg.data
-        const world = storage.getWorld()
-        const clients = storage.getClients()
-        const newWorld = putCellOnCoordinates(world, x, y, color)
-        storage.updateWorld(newWorld)
-        sendWorldUpdate(clients, newWorld)
-    }
-
-    const placePattern = msg => {
+    const placeCells = msg => {
         const { x, y, color, pattern } = msg.data
-        const world = storage.getWorld()
+        const { cells, generation } = storage.getWorld()
+        const newCells = pattern
+            ? putPatternOnCoordinates(cells, x, y, color, pattern)
+            : putCellOnCoordinates(cells, x, y, color)
+        storage.updateWorld(newCells)
         const clients = storage.getClients()
-        const newWorld = putPatternOnCoordinates(world, x, y, color, pattern)
-        storage.updateWorld(newWorld)
-        sendWorldUpdate(clients, newWorld)
+        sendWorldUpdate(clients, { cells: newCells, generation })
     }
 
     const startTicks = () => {
+        console.log('ticksInterval :', ticksInterval)
         if (!ticksInterval) {
             ticksInterval = setInterval(nextTick, 1000)
         }
     }
 
     const nextTick = () => {
-        const world = storage.getWorld()
+        const { cells, generation } = storage.getWorld()
         const clients = storage.getClients()
-        const newWorld = getNextGeneration(world)
-        storage.updateWorld(newWorld)
-        sendWorldUpdate(clients, newWorld)
+        const newCells = getNextGeneration(cells)
+        storage.updateWorld(newCells, generation + 1)
+        sendWorldUpdate(clients, { cells: newCells, generation: generation + 1 })
     }
 
     const pauseTick = () => {
         clearInterval(ticksInterval)
+        ticksInterval = 0
     }
 
     const refreshTicks = () => {
+        pauseTick()
         const clients = storage.getClients()
-        const newWorld = createGrid(20)
-        storage.updateWorld(newWorld)
-        sendWorldUpdate(clients, newWorld)
+        const newCells = createGrid(20)
+        storage.updateWorld(newCells, 0)
+        sendWorldUpdate(clients, { cells: newCells, generation: 0 })
     }
 
     return {
         handleInitialRequest,
         sendWorldUpdate,
-        placeCell,
+        placeCells,
         startTicks,
         nextTick,
         pauseTick,
         refreshTicks,
-        placePattern,
     }
 }
 

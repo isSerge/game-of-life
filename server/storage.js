@@ -1,20 +1,29 @@
-const createStorage = world => {
+const createStorage = cells => {
     const store = {
-        world,
+        cells,
         generation: 0,
         clients: [],
     }
 
-    const updateWorld = world => (store.world = world)
-    const getWorld = () => store.world
-    const incrementGeneration = () => (store.generation += 1)
+    const updateWorld = (cells, generation) => {
+        store.cells = cells
+
+        if (generation || generation === 0) {
+            store.generation = generation
+        }
+    }
+
+    const getWorld = () => {
+        const { cells, generation } = store
+        return { cells, generation }
+    }
+
     const addClient = client => store.clients.push(client)
     const getClients = () => store.clients
 
     return {
         updateWorld,
         addClient,
-        incrementGeneration,
         getClients,
         getWorld,
     }

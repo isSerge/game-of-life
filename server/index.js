@@ -31,12 +31,11 @@ const createMessageHandler = controller => message => {
 
     const topicHandlers = {
         [topics.INITIAL_REQUEST]: controller.handleInitialRequest,
-        [topics.PLACE_CELL]: controller.placeCell,
+        [topics.PLACE_CELLS]: controller.placeCells,
         [topics.START_TICKS]: controller.startTicks,
         [topics.NEXT_TICK]: controller.nextTick,
         [topics.PAUSE_TICK]: controller.pauseTick,
         [topics.REFRESH_TICKS]: controller.refreshTicks,
-        [topics.PLACE_PATTERN]: controller.placePattern,
     }
 
     const propName = `${message.type}Data`

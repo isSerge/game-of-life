@@ -1,8 +1,7 @@
 export const topics = {
     INITIAL_REQUEST: 'initial-request',
     INITIAL_RESPONSE: 'initial-response',
-    PLACE_CELL: 'place-cell',
-    PLACE_PATTERN: 'place-pattern',
+    PLACE_CELLS: 'place-cells',
     START_TICKS: 'start-ticks',
     NEXT_TICK: 'next-tick',
     PAUSE_TICK: 'pause-tick',

@@ -25,14 +25,14 @@ const App = () => {
     const [color, setColor] = useState('')
     const [selectedPattern, selectPattern] = useState(patternNames.DEFAULT)
 
-    const placeCell = (x, y) => {
+    const placeCells = (x, y) => {
         if (selectedPattern !== patternNames.DEFAULT) {
-            return sendEvent(topics.PLACE_PATTERN, { x, y, color, pattern: selectedPattern })
+            return sendEvent(topics.PLACE_CELLS, { x, y, color, pattern: selectedPattern })
         }
 
         // check if already has a cell
         if (!cells[x][y]) {
-            return sendEvent(topics.PLACE_CELL, { x, y, color })
+            return sendEvent(topics.PLACE_CELLS, { x, y, color })
         }
     }
 
@@ -79,7 +79,7 @@ const App = () => {
                 pauseTicks={pauseTicks}
                 refreshTicks={refreshTicks}
             />
-            <Board cells={cells} handleCellClick={placeCell} />
+            <Board cells={cells} handleCellClick={placeCells} />
             <Patterns
                 patterns={patterns}
                 handleItemClick={selectPattern}
