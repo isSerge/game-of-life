@@ -7,6 +7,8 @@ const {
 const { topics } = require('./constants')
 
 const createController = (storage, connection) => {
+    let ticksInterval
+
     const handleInitialRequest = () => {
         const clients = storage.getClients()
         const { color } = clients.find(cl => cl.connection === connection)
@@ -53,7 +55,7 @@ const createController = (storage, connection) => {
     }
 
     const startTicks = () => {
-        console.log('ticks started')
+        ticksInterval = setInterval(nextTick, 1000)
     }
 
     const nextTick = () => {
@@ -65,7 +67,7 @@ const createController = (storage, connection) => {
     }
 
     const pauseTick = () => {
-        console.log('todo pauseTick')
+        clearInterval(ticksInterval)
     }
 
     const refreshTicks = () => {
