@@ -17,7 +17,10 @@ const topics = {
     WORLD_UPDATE: 'world-update',
 }
 
+const SIZE = 20
+
 module.exports = {
     patternNames,
     topics,
+    SIZE,
 }

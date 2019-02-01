@@ -1,20 +1,7 @@
 const { mode } = require('./utils')
-const { patternNames } = require('./constants')
-// const { floor, random } = Math
+const { patternNames, SIZE } = require('./constants')
 
-// const fillWithRandomData = grid =>
-//     grid.map(x =>
-//         x.map(() => {
-//             if (floor(random() * 2)) {
-//                 return '#000'
-//             }
-//             return 0
-//         }),
-//     )
-
-const SIZE = 20
-
-// create 2-dimensional array
+// grid is a 2-dimensional array
 const createGrid = size => new Array(size).fill(0).map(() => new Array(size).fill(0))
 
 const isWithinBounds = v => v >= 0 && v < SIZE
@@ -84,6 +71,5 @@ module.exports = {
     getNextGeneration,
     createGrid,
     putCellOnCoordinates,
-    // fillWithRandomData,
     putPatternOnCoordinates,
 }
