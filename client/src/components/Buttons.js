@@ -1,12 +1,28 @@
 import React from 'react'
+import styled from 'styled-components'
+
+const Button = styled.button`
+    margin: 5px 10px;
+    padding: 10px 20px;
+    border-radius: 15px;
+    text-transform: uppercase;
+
+    &:hover {
+        background-color: ${({ theme }) => theme.selectedColor};
+    }
+`
+
+const Wrapper = styled.div`
+    margin: 20px;
+`
 
 const Buttons = ({ startTicks, nextTick, pauseTicks, refreshTicks }) => (
-    <div>
-        <button onClick={startTicks}>start</button>
-        <button onClick={nextTick}>next</button>
-        <button onClick={pauseTicks}>pause</button>
-        <button onClick={refreshTicks}>refresh</button>
-    </div>
+    <Wrapper>
+        <Button onClick={startTicks}>start</Button>
+        <Button onClick={nextTick}>next</Button>
+        <Button onClick={pauseTicks}>pause</Button>
+        <Button onClick={refreshTicks}>refresh</Button>
+    </Wrapper>
 )
 
 export default Buttons
