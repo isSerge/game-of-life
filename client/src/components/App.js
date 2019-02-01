@@ -71,17 +71,17 @@ const App = () => {
         <div>
             <Header title="Game of life" />
             <Info generation={generation} color={color} />
-            <Board cells={cells} handleCellClick={placeCell} />
-            <Patterns
-                patterns={patterns}
-                handleItemClick={selectPattern}
-                selectedPattern={selectedPattern}
-            />
             <Buttons
                 startTicks={startTicks}
                 nextTick={nextTick}
                 pauseTicks={pauseTicks}
                 refreshTicks={refreshTicks}
+            />
+            <Board cells={cells} handleCellClick={placeCell} />
+            <Patterns
+                patterns={patterns}
+                handleItemClick={selectPattern}
+                selectedPattern={selectedPattern}
             />
         </div>
     )

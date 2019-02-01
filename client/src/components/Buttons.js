@@ -6,6 +6,7 @@ const Button = styled.button`
     padding: 10px 20px;
     border-radius: 15px;
     text-transform: uppercase;
+    outline: none;
 
     &:hover {
         background-color: ${({ theme }) => theme.selectedColor};
@@ -13,7 +14,7 @@ const Button = styled.button`
 `
 
 const Wrapper = styled.div`
-    margin: 20px;
+    margin: 20px 0;
 `
 
 const Buttons = ({ startTicks, nextTick, pauseTicks, refreshTicks }) => (
