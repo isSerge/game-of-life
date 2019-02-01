@@ -7,16 +7,6 @@ const Wrapper = styled.header`
     margin: 20px 0;
 `
 
-const Lang = styled.span`
-    cursor: pointer;
-    padding: 0 10px;
-    color: ${({ isActive, theme }) => isActive && theme.selectedColor};
-
-    &:hover {
-        color: ${({ theme }) => theme.selectedColor};
-    }
-`
-
 const Title = styled.h1`
     margin: 0;
     text-transform: uppercase;
@@ -25,10 +15,6 @@ const Title = styled.h1`
 const Header = ({ title }) => (
     <Wrapper>
         <Title>{title}</Title>
-        <div>
-            <Lang isActive>ENG</Lang>
-            <Lang>中文</Lang>
-        </div>
     </Wrapper>
 )
 

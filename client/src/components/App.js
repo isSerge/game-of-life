@@ -11,19 +11,19 @@ import patterns from '../patterns'
 
 const socket = new WebSocket('ws://127.0.0.1:8000/')
 
+const sendEvent = (topic, data) =>
+    socket.send(
+        JSON.stringify({
+            topic,
+            data,
+        }),
+    )
+
 const App = () => {
     const [cells, updateCells] = useState([])
     const [generation, setGeneration] = useState(0)
     const [color, setColor] = useState('')
     const [selectedPattern, selectPattern] = useState(patternNames.DEFAULT)
-
-    const sendEvent = (topic, data) =>
-        socket.send(
-            JSON.stringify({
-                topic,
-                data,
-            }),
-        )
 
     const placeCell = (x, y) => {
         if (selectedPattern !== patternNames.DEFAULT) {
@@ -43,16 +43,18 @@ const App = () => {
     const initialRequest = () => sendEvent(topics.INITIAL_REQUEST)
 
     const handleEvent = event => {
-        // console.log('event :', event)
         const object = JSON.parse(event.data)
 
         if (object.topic === topics.INITIAL_RESPONSE) {
-            setColor(object.data.color)
-            updateCells(object.data.world)
+            const { color, cells } = object.data
+            setColor(color)
+            updateCells(cells)
         }
 
         if (object.topic === topics.WORLD_UPDATE) {
-            updateCells(object.data)
+            const { generation, cells } = object.data
+            updateCells(cells)
+            setGeneration(generation)
         }
     }
 
