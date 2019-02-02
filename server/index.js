@@ -2,7 +2,7 @@
 const http = require('http')
 const Websocket = require('websocket').server
 
-const { topics, SIZE } = require('./constants')
+const { topics, BOARD_SIZE } = require('./constants')
 const createStorage = require('./storage')
 const createService = require('./service')
 const { createGrid } = require('./board')
@@ -24,7 +24,7 @@ const ws = new Websocket({
     autoAcceptConnections: false,
 })
 
-const storage = createStorage(createGrid(SIZE))
+const storage = createStorage(createGrid(BOARD_SIZE))
 
 const createMessageHandler = service => message => {
     const topicHandlers = {
@@ -55,8 +55,6 @@ const createCloseHandler = connection => (reasonCode, description) => {
 const createRequestHandler = storage => req => {
     // accept all requests
     const connection = req.accept('', req.origin)
-
-    // TODO: implement getcolor in storage, provide colors and check if generated is already taken
     const currentColors = storage.getColors()
     const newUserColor = getNewUserColor(currentColors)
 

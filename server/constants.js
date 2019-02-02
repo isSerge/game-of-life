@@ -17,13 +17,13 @@ const topics = {
     WORLD_UPDATE: 'world-update',
 }
 
-const SIZE = 20
+const BOARD_SIZE = process.env.BOARD_SIZE || 20
 
-const TICK_INTERVAL = 1000
+const TICK_INTERVAL = process.env.TICK_INTERVAL || 1000
 
 module.exports = {
     patternNames,
     topics,
-    SIZE,
+    BOARD_SIZE,
     TICK_INTERVAL,
 }

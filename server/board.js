@@ -1,11 +1,11 @@
 const { mode } = require('./utils')
-const { patternNames, SIZE } = require('./constants')
+const { patternNames, BOARD_SIZE } = require('./constants')
 
 // grid is a 2-dimensional array
 const createGrid = size => new Array(size).fill(0).map(() => new Array(size).fill(0))
 
 // utils to check if dots are within board
-const isWithinBoard = v => v >= 0 && v < SIZE
+const isWithinBoard = v => v >= 0 && v < BOARD_SIZE
 const areWithinBoard = (x, y) => isWithinBoard(x) && isWithinBoard(y)
 
 const getNeighbourCoordinates = (x, y) =>

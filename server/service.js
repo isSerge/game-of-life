@@ -1,4 +1,4 @@
-const { topics, SIZE, TICK_INTERVAL } = require('./constants')
+const { topics, BOARD_SIZE, TICK_INTERVAL } = require('./constants')
 const {
     getNextGeneration,
     putCellOnCoordinates,
@@ -64,7 +64,7 @@ const createService = (storage, connection) => {
     const refreshTicks = () => {
         pauseTick()
         const clients = storage.getClients()
-        const newCells = createGrid(SIZE)
+        const newCells = createGrid(BOARD_SIZE)
 
         storage.updateWorld(newCells, 0)
         sendWorldUpdate(clients, { cells: newCells, generation: 0 })
