@@ -2,11 +2,11 @@
 const http = require('http')
 const Websocket = require('websocket').server
 
-const { topics } = require('./constants')
+const { topics, SIZE } = require('./constants')
 const createStorage = require('./storage')
-const createController = require('./controller')
+const createService = require('./service')
 const { createGrid } = require('./board')
-const { generateRandomColor } = require('./utils')
+const { getNewUserColor } = require('./utils')
 
 // const index = fs.readFileSync('./index.html', 'utf8');
 // (req, res) => {
@@ -24,18 +24,16 @@ const ws = new Websocket({
     autoAcceptConnections: false,
 })
 
-const storage = createStorage(createGrid(20))
+const storage = createStorage(createGrid(SIZE))
 
-const createMessageHandler = controller => message => {
-    console.log('message :', message)
-
+const createMessageHandler = service => message => {
     const topicHandlers = {
-        [topics.INITIAL_REQUEST]: controller.handleInitialRequest,
-        [topics.PLACE_CELLS]: controller.placeCells,
-        [topics.START_TICKS]: controller.startTicks,
-        [topics.NEXT_TICK]: controller.nextTick,
-        [topics.PAUSE_TICK]: controller.pauseTick,
-        [topics.REFRESH_TICKS]: controller.refreshTicks,
+        [topics.INITIAL_REQUEST]: service.handleInitialRequest,
+        [topics.PLACE_CELLS]: service.placeCells,
+        [topics.START_TICKS]: service.startTicks,
+        [topics.NEXT_TICK]: service.nextTick,
+        [topics.PAUSE_TICK]: service.pauseTick,
+        [topics.REFRESH_TICKS]: service.refreshTicks,
     }
 
     const propName = `${message.type}Data`
@@ -58,15 +56,17 @@ const createRequestHandler = storage => req => {
     // accept all requests
     const connection = req.accept('', req.origin)
 
-    const color = generateRandomColor()
+    // TODO: implement getcolor in storage, provide colors and check if generated is already taken
+    const currentColors = storage.getColors()
+    const newUserColor = getNewUserColor(currentColors)
 
-    storage.addClient({ connection, color })
+    storage.addClient({ connection, color: newUserColor })
 
     console.log(`Connected ${connection.remoteAddress}`)
 
-    const controller = createController(storage, connection)
+    const service = createService(storage, connection)
+    const handleMessage = createMessageHandler(service)
     const handleClose = createCloseHandler(connection)
-    const handleMessage = createMessageHandler(controller)
 
     connection.on('message', handleMessage)
     connection.on('close', handleClose)

@@ -4,8 +4,9 @@ const { patternNames, SIZE } = require('./constants')
 // grid is a 2-dimensional array
 const createGrid = size => new Array(size).fill(0).map(() => new Array(size).fill(0))
 
-const isWithinBounds = v => v >= 0 && v < SIZE
-const areWithinBounds = (x, y) => isWithinBounds(x) && isWithinBounds(y)
+// utils to check if dots are within board
+const isWithinBoard = v => v >= 0 && v < SIZE
+const areWithinBoard = (x, y) => isWithinBoard(x) && isWithinBoard(y)
 
 const getNeighbourCoordinates = (x, y) =>
     [
@@ -17,8 +18,9 @@ const getNeighbourCoordinates = (x, y) =>
         [x - 1, y + 1],
         [x, y + 1],
         [x + 1, y + 1],
-    ].filter(xyArr => areWithinBounds(...xyArr))
+    ].filter(xyArr => areWithinBoard(...xyArr))
 
+// returns pair - sum of neighbours and dominant color
 const countNeighbours = (grid, rowIndex, colIndex) => {
     const neighbourCoordinates = getNeighbourCoordinates(rowIndex, colIndex)
     const neighbours = neighbourCoordinates.map(([x, y]) => grid[x][y])
@@ -27,6 +29,7 @@ const countNeighbours = (grid, rowIndex, colIndex) => {
     return [sum, dominantColor]
 }
 
+// returns new generation on cells based on Game of Life rules
 const getNextGeneration = grid =>
     grid.map((x, xIndex) =>
         x.map((_, yIndex) => {

@@ -19,8 +19,11 @@ const topics = {
 
 const SIZE = 20
 
+const TICK_INTERVAL = 1000
+
 module.exports = {
     patternNames,
     topics,
     SIZE,
+    TICK_INTERVAL,
 }

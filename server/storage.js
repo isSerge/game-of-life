@@ -20,12 +20,16 @@ const createStorage = cells => {
 
     const addClient = client => store.clients.push(client)
     const getClients = () => store.clients
+    const getCurrentClient = connection => store.clients.find(cl => cl.connection === connection)
+    const getColors = () => store.clients.map(client => client.color)
 
     return {
         updateWorld,
         addClient,
         getClients,
         getWorld,
+        getColors,
+        getCurrentClient,
     }
 }
 

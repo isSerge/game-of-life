@@ -1,4 +1,4 @@
-const { topics } = require('./constants')
+const { topics, SIZE, TICK_INTERVAL } = require('./constants')
 const {
     getNextGeneration,
     putCellOnCoordinates,
@@ -6,12 +6,12 @@ const {
     createGrid,
 } = require('./board')
 
-const createController = (storage, connection) => {
+const createService = (storage, connection) => {
     let ticksInterval
 
+    // when new client connects it makes initial request to get generated color and board of cells
     const handleInitialRequest = () => {
-        const clients = storage.getClients()
-        const { color } = clients.find(cl => cl.connection === connection)
+        const { color } = storage.getCurrentClient(connection)
         const world = storage.getWorld()
 
         connection.send(
@@ -39,26 +39,21 @@ const createController = (storage, connection) => {
     const placeCells = msg => {
         const { x, y, color, pattern } = msg.data
         const { cells, generation } = storage.getWorld()
+        const clients = storage.getClients()
+
+        // if pattern is provided - place dots according to pattern, otherwise - place single dot
         const newCells = pattern
             ? putPatternOnCoordinates(cells, x, y, color, pattern)
             : putCellOnCoordinates(cells, x, y, color)
+
         storage.updateWorld(newCells)
-        const clients = storage.getClients()
         sendWorldUpdate(clients, { cells: newCells, generation })
     }
 
     const startTicks = () => {
         if (!ticksInterval) {
-            ticksInterval = setInterval(nextTick, 1000)
+            ticksInterval = setInterval(nextTick, TICK_INTERVAL)
         }
-    }
-
-    const nextTick = () => {
-        const { cells, generation } = storage.getWorld()
-        const clients = storage.getClients()
-        const newCells = getNextGeneration(cells)
-        storage.updateWorld(newCells, generation + 1)
-        sendWorldUpdate(clients, { cells: newCells, generation: generation + 1 })
     }
 
     const pauseTick = () => {
@@ -69,9 +64,19 @@ const createController = (storage, connection) => {
     const refreshTicks = () => {
         pauseTick()
         const clients = storage.getClients()
-        const newCells = createGrid(20)
+        const newCells = createGrid(SIZE)
+
         storage.updateWorld(newCells, 0)
         sendWorldUpdate(clients, { cells: newCells, generation: 0 })
+    }
+
+    const nextTick = () => {
+        const { cells, generation } = storage.getWorld()
+        const clients = storage.getClients()
+        const newCells = getNextGeneration(cells)
+
+        storage.updateWorld(newCells, generation + 1)
+        sendWorldUpdate(clients, { cells: newCells, generation: generation + 1 })
     }
 
     return {
@@ -85,4 +90,4 @@ const createController = (storage, connection) => {
     }
 }
 
-module.exports = createController
+module.exports = createService

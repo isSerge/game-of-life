@@ -1,5 +1,17 @@
 const generateRandomColor = () => `#${(((1 << 24) * Math.random()) | 0).toString(16)}`
 
+// receives array of current colors and checks if generated color was already taken
+const getNewUserColor = currentColors => {
+    const newColor = generateRandomColor()
+
+    if (currentColors.includes(newColor)) {
+        return getNewUserColor(currentColors)
+    }
+
+    return newColor
+}
+
+// utility function used to get dominant color
 const mode = arr =>
     arr.reduce(
         (current, item) => {
@@ -16,6 +28,6 @@ const mode = arr =>
     ).mode
 
 module.exports = {
-    generateRandomColor,
+    getNewUserColor,
     mode,
 }
