@@ -75,4 +75,6 @@ module.exports = {
     createGrid,
     putCellOnCoordinates,
     putPatternOnCoordinates,
+    getNeighbourCoordinates,
+    countNeighbours,
 }
