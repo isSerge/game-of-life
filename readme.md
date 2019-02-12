@@ -44,3 +44,10 @@ My intention was to go with as minimal setup as possible:
 -   In order to make the app modular and extendable I have separated logic for handling web-socket messages and connections (index.js), accessing storage and sending responses to user or users (service.js) and board update (board.js)
 -   For data storage I used in-memory storage, however for the real-world application I would use database solution like Firebase, RethinkDB, Redis, etc. For this purpose storage is a separate module, which can be later replaced by another solution without affecting the whole app.
 -   In order to make code more testable I utilized factory pattern and pure functions.
+
+TODO:
+
+-   Add database
+-   Add clustering
+-   Add more unit test
+-   Replace `console.log` with better logger
