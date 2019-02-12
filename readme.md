@@ -24,7 +24,7 @@ Note: Commands should run inside app folder
 
 -   `npm run dev` - run in dev mode
 -   `npm start` - run in prod mode
--   `npm test` - run test
+-   `npm test` - run tests
 
 ### Deployment
 
