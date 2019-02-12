@@ -15,8 +15,8 @@ Complements [UI app](https://github.com/isSerge/game-of-life-websocket-server)
 
 ### Configuration
 
--   The board size is 20 cells by default, to set another value - provide BOARD_SIZE environmental variable
--   The tick interval is 1000ms (1 second) by default, to set another value - provide TICK_INTERVAL environmental variable
+-   The board size is 20 cells by default, to set another value - provide `BOARD_SIZE` environmental variable
+-   The tick interval is 1000ms (1 second) by default, to set another value - provide `TICK_INTERVAL` environmental variable
 
 ### Scripts
 
@@ -33,7 +33,7 @@ Note: Commands should run inside app folder
 
 To verify that app is running - check logs `heroku logs --tail`
 
-Note: In order to deploy app to Heroku you need to have Heroku CLI and be logged in
+Note: In order to deploy app to Heroku you need to have (Heroku CLI)[https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up] and be logged in
 
 ### Technical choices and trade-offs
 
