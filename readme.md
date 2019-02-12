@@ -33,7 +33,7 @@ Note: Commands should run inside app folder
 
 To verify that app is running - check logs `heroku logs --tail`
 
-Note: In order to deploy app to Heroku you need to have (Heroku CLI)[https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up] and be logged in
+Note: In order to deploy app to Heroku you need to have [Heroku CLI](https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up) and be logged in
 
 ### Technical choices and trade-offs
 
