@@ -25,7 +25,7 @@ const countNeighbours = (grid, rowIndex, colIndex) => {
     const neighbourCoordinates = getNeighbourCoordinates(rowIndex, colIndex)
     const neighbours = neighbourCoordinates.map(([x, y]) => grid[x][y])
     const dominantColor = mode(neighbours)
-    const sum = neighbours.filter(x => x).length
+    const sum = neighbours.filter(x => !!x).length // filter only truthy values, reject 0 cells
     return [sum, dominantColor]
 }
 
