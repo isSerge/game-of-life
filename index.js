@@ -8,9 +8,10 @@ const { createGrid } = require('./board')
 const { getNewUserColor } = require('./utils')
 
 const server = http.createServer()
+const port = process.env.PORT || 8000
 
-server.listen(8000, () => {
-    console.log('Listen port 8000')
+server.listen(port, () => {
+    console.log(`Listen port ${port}`)
 })
 
 const ws = new Websocket({
