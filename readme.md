@@ -4,7 +4,7 @@
 
 Real-time multiplayer Conway's Game of Life implementation using NodeJS web-socket server.
 
-Complements [UI app](https://github.com/isSerge/game-of-life-websocket-server)
+Complements [UI app](https://github.com/isSerge/game-of-life-websocket-ui)
 
 ### Start locally
 
