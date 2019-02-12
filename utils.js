@@ -1,6 +1,6 @@
 const generateRandomColor = () => `#${(((1 << 24) * Math.random()) | 0).toString(16)}`
 
-// receives array of current colors and checks if generated color was already taken
+// if generated color was already taken - generates new color
 const getNewUserColor = currentColors => {
     const newColor = generateRandomColor()
 
